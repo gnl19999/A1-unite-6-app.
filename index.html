@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kelime Kartları | İKON VERSİYON</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <title>Kelime Kartları | GÖRSEL URL VERSİYON</title>
     <style>
         /* --- STİL BAŞLANGIÇ --- */
         body {
@@ -30,7 +28,6 @@
             position: relative;
             margin-top: 20px;
             cursor: pointer; 
-            /* İyileştirme: Animasyonları daha akıcı hale getirdik */
             transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
                         box-shadow 0.2s ease, 
                         opacity 0.3s ease;
@@ -44,12 +41,11 @@
         }
         
         .card:active {
-            /* Tıklama animasyonu daha belirginleştirildi */
             transform: scale(0.97);
         } 
 
-        /* YENİ İKON STİLİ */
-        .word-icon-display {
+        /* YENİ GÖRSEL STİLİ */
+        .word-image-display {
             width: 100%;
             height: 180px;
             margin-bottom: 25px;
@@ -61,20 +57,30 @@
             align-items: center;
             pointer-events: none;
             transition: background 0.3s ease;
+            overflow: hidden; /* Resmin taşmasını engeller */
         }
-
-        .word-icon-display i {
-            font-size: 80px;
-            color: #1976D2;
+        
+        .word-image-display img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain; /* Görüntüyü bozmadan sığdırır */
+            border-radius: 15px;
+            transition: transform 0.3s ease;
         }
-
-        .card:hover .word-icon-display {
+        
+        .card:hover .word-image-display {
             background-color: #BBDEFB; /* Hover'da daha koyu */
+        }
+        
+        .card:hover .word-image-display img {
+            transform: scale(1.05);
         }
 
         .header { margin-bottom: 15px; }
         .word-row { display: flex; align-items: center; gap: 15px; }
+        
         .speaker-icon { 
+            /* İkon yerine düz metin (Emoji) kullanıldı */
             color: #1976D2;
             font-size: 28px; 
             cursor: pointer; 
@@ -85,7 +91,7 @@
         .speaker-icon:hover { background: #E3F2FD; }
         
         h1 { color: #2D3748; margin: 0; font-size: 36px; font-weight: 800; text-transform: capitalize; }
-        .meaning { color: #718096; margin-top: 5px; margin-left: 58px; font-size: 18px; font-weight: 500;}
+        .meaning { color: #718096; margin-top: 5px; margin-left: 58px; font-size: 18px; font-weight: 500;} 
         
         .box { 
             border: 1px solid #E2E8F0; 
@@ -130,169 +136,29 @@
         // --- JAVASCRIPT BAŞLANGIÇ ---
 
         /**
-         * Kelime Listesi: Görsel URL'leri kaldırıldı ve yerine ikon sınıfları (icon_class) eklendi.
+         * Kelime Listesi: icon_class yerine image_url kullanıldı
          */
         const wordList = [
-            { 
-                word: "bread", 
-                meaning: "ekmek", 
-                example_en: "I bought a loaf of fresh [bread].", 
-                example_tr: "Taze bir somun ekmek aldım.", 
-                synonyms: "loaf, baked good",
-                icon_class: "fa-solid fa-bread-slice" // İkon: Ekmek
-            },
-            { 
-                word: "break", 
-                meaning: "kırmak, mola vermek", 
-                example_en: "Be careful not to [break] the glass.", 
-                example_tr: "Bardağı kırmamaya dikkat et.", 
-                synonyms: "shatter, pause",
-                icon_class: "fa-solid fa-hand-fist" // İkon: Yumruk (Kırma eylemi veya mola)
-            },
-            { 
-                word: "breakfast", 
-                meaning: "kahvaltı", 
-                example_en: "I usually eat eggs for [breakfast].", 
-                example_tr: "Genellikle kahvaltıda yumurta yerim.", 
-                synonyms: "morning meal",
-                icon_class: "fa-solid fa-mug-saucer" // İkon: Kahve/Çay fincanı
-            },
-            { 
-                word: "bring", 
-                meaning: "getirmek", 
-                example_en: "Don't forget to [bring] your book.", 
-                example_tr: "Kitabını getirmeyi unutma.", 
-                synonyms: "fetch, carry",
-                icon_class: "fa-solid fa-hand-holding-box" // İkon: Kutu getiren el
-            },
-            { 
-                word: "brother", 
-                meaning: "erkek kardeş", 
-                example_en: "My older [brother] lives abroad.", 
-                example_tr: "Ağabeyim yurt dışında yaşıyor.", 
-                synonyms: "sibling (male)",
-                icon_class: "fa-solid fa-person" // İkon: Erkek figürü
-            },
-            { 
-                word: "brown", 
-                meaning: "kahverengi", 
-                example_en: "I love the color of these [brown] shoes.", 
-                example_tr: "Bu kahverengi ayakkabıların rengini seviyorum.", 
-                synonyms: "tan, auburn",
-                icon_class: "fa-solid fa-palette" // İkon: Palet (Renk)
-            },
-            { 
-                word: "build", 
-                meaning: "inşa etmek", 
-                example_en: "They plan to [build] a new school here.", 
-                example_tr: "Buraya yeni bir okul inşa etmeyi planlıyorlar.", 
-                synonyms: "construct, erect",
-                icon_class: "fa-solid fa-trowel-bricks" // İkon: Tuğla ve Mala
-            },
-            { 
-                word: "building", 
-                meaning: "bina", 
-                example_en: "That tall [building] is new.", 
-                example_tr: "Şu uzun bina yeni.", 
-                synonyms: "structure, edifice",
-                icon_class: "fa-solid fa-building" // İkon: Bina
-            },
-            { 
-                word: "bus", 
-                meaning: "otobüs", 
-                example_en: "I take the [bus] to work every day.", 
-                example_tr: "İşe her gün otobüsle gidiyorum.", 
-                synonyms: "coach, public transport",
-                icon_class: "fa-solid fa-bus" // İkon: Otobüs
-            },
-            { 
-                word: "business", 
-                meaning: "iş, ticaret", 
-                example_en: "He started his own small [business].", 
-                example_tr: "Kendi küçük işini kurdu.", 
-                synonyms: "enterprise, company",
-                icon_class: "fa-solid fa-briefcase" // İkon: Evrak çantası
-            },
-            { 
-                word: "busy", 
-                meaning: "meşgul", 
-                example_en: "Sorry, I'm too [busy] to talk right now.", 
-                example_tr: "Üzgünüm, şu an konuşamayacak kadar meşgulüm.", 
-                synonyms: "occupied, engaged",
-                icon_class: "fa-solid fa-hourglass-half" // İkon: Yarım Kum Saati (Zaman yok)
-            },
-            { 
-                word: "but", 
-                meaning: "ama, fakat", 
-                example_en: "It was raining, [but] we still went outside.", 
-                example_tr: "Yağmur yağıyordu ama yine de dışarı çıktık.", 
-                synonyms: "however, yet",
-                icon_class: "fa-solid fa-exclamation" // İkon: Ünlem (Karşıtlık)
-            },
-            { 
-                word: "butter", 
-                meaning: "tereyağı", 
-                example_en: "Spread some [butter] on your toast.", 
-                example_tr: "Tostunun üzerine biraz tereyağı sür.", 
-                synonyms: "margarine (loosely), spread",
-                icon_class: "fa-solid fa-cheese" // İkon: Peynir (Süt ürünü)
-            },
-            { 
-                word: "buy", 
-                meaning: "satın almak", 
-                example_en: "I need to [buy] a new laptop.", 
-                example_tr: "Yeni bir dizüstü bilgisayar satın almam gerekiyor.", 
-                synonyms: "purchase, acquire",
-                icon_class: "fa-solid fa-cart-shopping" // İkon: Alışveriş sepeti
-            },
-            { 
-                word: "by", 
-                meaning: "tarafından, yanında, ile", 
-                example_en: "The book was written [by] a famous author.", 
-                example_tr: "Kitap ünlü bir yazar tarafından yazılmıştı.", 
-                synonyms: "near, past",
-                icon_class: "fa-solid fa-location-dot" // İkon: Konum (Yanında/yakınında)
-            },
-            { 
-                word: "bye", 
-                meaning: "güle güle", 
-                example_en: "I said [bye] to my friends and left.", 
-                example_tr: "Arkadaşlarıma güle güle deyip ayrıldım.", 
-                synonyms: "goodbye, farewell",
-                icon_class: "fa-solid fa-hand-wave" // İkon: El Sallama
-            },
-            { 
-                word: "cafe", 
-                meaning: "kafe", 
-                example_en: "Let's meet at the new [cafe] downtown.", 
-                example_tr: "Şehir merkezindeki yeni kafede buluşalım.", 
-                synonyms: "coffee shop, bistro",
-                icon_class: "fa-solid fa-coffee-bean" // İkon: Kahve Çekirdeği
-            },
-            { 
-                word: "cake", 
-                meaning: "kek, pasta", 
-                example_en: "She baked a chocolate [cake] for the party.", 
-                example_tr: "Parti için çikolatalı bir kek yaptı.", 
-                synonyms: "pastry, dessert",
-                icon_class: "fa-solid fa-cake-candles" // İkon: Mumlu pasta
-            },
-            { 
-                word: "call", 
-                meaning: "aramak, çağırmak", 
-                example_en: "Please [call] me when you get home.", 
-                example_tr: "Eve vardığında lütfen beni ara.", 
-                synonyms: "phone, summon",
-                icon_class: "fa-solid fa-phone" // İkon: Telefon
-            },
-            { 
-                word: "camera", 
-                meaning: "kamera, fotoğraf makinesi", 
-                example_en: "She took a photo with her new [camera].", 
-                example_tr: "Yeni fotoğraf makinesiyle bir fotoğraf çekti.", 
-                synonyms: "photo device",
-                icon_class: "fa-solid fa-camera" // İkon: Kamera
-            }
+            { word: "bread", meaning: "ekmek", example_en: "I bought a loaf of fresh [bread].", example_tr: "Taze bir somun ekmek aldım.", synonyms: "loaf, baked good", image_url: "https://media.istockphoto.com/id/503758164/vector/sliced-fresh-wheat-bread.jpg?s=612x612&w=0&k=20&c=OA4HUjfrg0f98sxSdJYBUWBFkqMUCz3SmGgrTCDkxfY=" },
+            { word: "break", meaning: "kırmak, mola vermek", example_en: "Be careful not to [break] the glass.", example_tr: "Bardağı kırmamaya dikkat et.", synonyms: "shatter, pause", image_url: "https://media.istockphoto.com/id/1310781958/tr/vekt%C3%B6r/vekt%C3%B6r-3d-beyaz-arka-plan-%C3%BCzerinde-izole-siyah-kapakl%C4%B1-ger%C3%A7ek%C3%A7i-kahverengi-ka%C4%9F%C4%B1t-tek.jpg?s=612x612&w=0&k=20&c=_HQM2tIa3rCJZZCIro-T-IDb-iJ97onCSh0_GA8Wft4=" },
+            { word: "breakfast", meaning: "kahvaltı", example_en: "I usually eat eggs for [breakfast].", example_tr: "Genellikle kahvaltıda yumurta yerim.", synonyms: "morning meal", image_url: "https://media.istockphoto.com/id/1295446625/tr/vekt%C3%B6r/kahve-yumurta-krep-ekmek-ve-portakal-suyu-vekt%C3%B6r%C3%BC-ile-kahvalt%C4%B1-nat%C3%BCrmort.jpg?s=612x612&w=0&k=20&c=0bU7egFTKHPqiTrGW1i8L0GLHqjfnbag3TPKKbFkthw=" },
+            { word: "bring", meaning: "getirmek", example_en: "Don't forget to [bring] your book.", example_tr: "Kitabını getirmeyi unutma.", synonyms: "fetch, carry", image_url: "https://media.istockphoto.com/id/1591210260/tr/vekt%C3%B6r/collection-of-travel-tourism-3d-icon-trip-planning-world-tour-holiday-vacation-travel-and.jpg?s=612x612&w=0&k=20&c=G0m6aCAKAdfA6wi36HqwK4zS-dBSf9m0hEP92Z9bVjY=" },
+            { word: "brother", meaning: "erkek kardeş", example_en: "My older [brother] lives abroad.", example_tr: "Ağabeyim yurt dışında yaşıyor.", synonyms: "sibling (male)", image_url: "https://png.pngtree.com/png-vector/20240607/ourmid/pngtree-brother-and-sister-3d-character-png-image_12633353.png" },
+            { word: "brown", meaning: "kahverengi", example_en: "I love the color of these [brown] shoes.", example_tr: "Bu kahverengi ayakkabıların rengini seviyorum.", synonyms: "tan, auburn", image_url: "https://img.freepik.com/free-vector/microchip-processor-background-realistic-style_52683-58316.jpg" },
+            { word: "build", meaning: "inşa etmek", example_en: "They plan to [build] a new school here.", example_tr: "Buraya yeni bir okul inşa etmeyi planlıyorlar.", synonyms: "construct, erect", image_url: "https://media.istockphoto.com/id/1428698181/vector/play-triangle-symbol-inside-3d-cube-elements-isometric-block-shapes-make-unity.jpg?s=612x612&w=0&k=20&c=-OlfdB7h2hNxWAT_COAExvkFeMcr4bm1Ix9WNRx4WBQ=" },
+            { word: "building", meaning: "bina", example_en: "That tall [building] is new.", example_tr: "Şu uzun bina yeni.", synonyms: "structure, edifice", image_url: "https://media.istockphoto.com/id/673329652/tr/vekt%C3%B6r/beyaz-arka-plan-%C3%BCzerinde-izole-3d-%C5%9Fehir-manzaras%C4%B1-render.jpg?s=612x612&w=0&k=20&c=pQutojLKdmHnUbfxL4YMi-KD0IrjP-rTCL4WHzUp-gI=" },
+            { word: "bus", meaning: "otobüs", example_en: "I take the [bus] to work every day.", example_tr: "İşe her gün otobüsle gidiyorum.", synonyms: "coach, public transport", image_url: "https://www.shutterstock.com/image-vector/yellow-minibus-camper-travel-3d-600nw-2491752415.jpg" },
+            { word: "business", meaning: "iş, ticaret", example_en: "He started his own small [business].", example_tr: "Kendi küçük işini kurdu.", synonyms: "enterprise, company", image_url: "https://img.freepik.com/premium-vektor/kapsamli-ofis-ikon-seti-is-akisinizi-ve-isinizi-kolaylastirin_1300528-14600.jpg" },
+            { word: "busy", meaning: "meşgul", example_en: "Sorry, I'm too [busy] to talk right now.", example_tr: "Üzgünüm, şu an konuşamayacak kadar meşgulüm.", synonyms: "occupied, engaged", image_url: "https://st2.depositphotos.com/3901147/5809/v/450/depositphotos_58094845-stock-illustration-businessman-on-office-worker-vector.jpg" },
+            { word: "but", meaning: "ama, fakat", example_en: "It was raining, [but] we still went outside.", example_tr: "Yağmur yağıyordu ama yine de dışarı çıktık.", synonyms: "however, yet", image_url: "https://img.freepik.com/premium-psd/cute-young-3d-businessman-thinking-character-generative-ai_43614-1107.jpg" },
+            { word: "butter", meaning: "tereyağı", example_en: "Spread some [butter] on your toast.", example_tr: "Tostunun üzerine biraz tereyağı sür.", synonyms: "margarine (loosely), spread", image_url: "https://lens.usercontent.google.com/image?vsrid=CKyKuZzrmfSUgwEQAhgBIiQyYTc4MWJlZS04MzNlLTQ5MDgtYjdmZC1jODczYjk0NTJmNmQyBiICd2UoDjjT6L2I2aSRAw&gsessionid=vap5gdlHsFrTgCUBsvw9KiTClBEEaGjcCOGtkbKr5hjd8q10g10IzA" },
+            { word: "buy", meaning: "satın almak", example_en: "I need to [buy] a new laptop.", example_tr: "Yeni bir dizüstü bilgisayar satın almam gerekiyor.", synonyms: "purchase, acquire", image_url: "https://png.pngtree.com/thumb_back/fh260/background/20220116/pngtree-the-grocery-cart-is-filled-with-several-hundred-us-dollar-bills-photo-image_27418350.jpg" },
+            { word: "by", meaning: "tarafından, yanında, ile", example_en: "The book was written [by] a famous author.", example_tr: "Kitap ünlü bir yazar tarafından yazılmıştı.", synonyms: "near, past", image_url: "https://img.freepik.com/ucretsiz-fotograf/acik-kapali-kitaplar-ve-kalemin-3d-cizimi_107791-15848.jpg" },
+            { word: "bye", meaning: "güle güle", example_en: "I said [bye] to my friends and left.", example_tr: "Arkadaşlarıma güle güle deyip ayrıldım.", synonyms: "goodbye, farewell", image_url: "https://png.pngtree.com/png-vector/20240531/ourlarge/pngtree-vector-of-couple-in-hugs-view-from-back-png-image_12579850.png" },
+            { word: "cafe", meaning: "kafe", example_en: "Let's meet at the new [cafe] downtown.", example_tr: "Şehir merkezindeki yeni kafede buluşalım.", synonyms: "coffee shop, bistro", image_url: "https://img.freepik.com/premium-vektor/two-men-talking-sitting-in-armchairs_760443-1209.jpg" },
+            { word: "cake", meaning: "kek, pasta", example_en: "She baked a chocolate [cake] for the party.", example_tr: "Parti için çikolatalı bir kek yaptı.", synonyms: "pastry, dessert", image_url: "https://img.freepik.com/ucretsiz-psd/dogum-gunu-ikonu-3d-render_23-2151036951.jpg?semt=ais_hybrid&w=740&q=80" },
+            { word: "call", meaning: "aramak, çağırmak", example_en: "Please [call] me when you get home.", example_tr: "Eve vardığında lütfen beni ara.", synonyms: "phone, summon", image_url: "https://st.depositphotos.com/1175928/1299/i/450/depositphotos_12994187-stock-photo-phone-icon.jpg" },
+            { word: "camera", meaning: "kamera, fotoğraf makinesi", example_en: "She took a photo with her new [camera].", example_tr: "Yeni fotoğraf makinesiyle bir fotoğraf çekti.", synonyms: "photo device", image_url: "https://img.freepik.com/premium-vektor/fotograf-ceken-fotografci-3d-vektor-insan-karakteri-illustrasyonu-cizgi-film-minimal_365941-1090.jpg" }
         ];
 
         let currentIndex = 0;
@@ -326,8 +192,8 @@
         }
 
         function createCard(data) {
-            // DEĞİŞİKLİK: image_url yerine icon_class kullanılıyor
-            const { word, meaning, example_en, example_tr, synonyms, icon_class } = data;
+            // DEĞİŞİKLİK: image_url kullanıldı
+            const { word, meaning, example_en, example_tr, synonyms, image_url } = data;
             
             // Köşeli parantez içindeki kelimeyi vurgula
             const highlightedExample = example_en.replace(/\[(.*?)\]/g, (match, p1) => `<span class="highlight">${p1}</span>`);
@@ -338,13 +204,13 @@
             const cardHTML = `
                 <div class="card" id="active-card" onclick="nextCard(event)"> 
                     
-                    <div class="word-icon-display">
-                        <i class="${icon_class}"></i>
+                    <div class="word-image-display">
+                        <img src="${image_url}" alt="${word} kelimesini temsil eden görsel">
                     </div>
 
                     <div class="header">
                         <div class="word-row">
-                            <i class="fas fa-volume-up speaker-icon" title="Dinle" onclick="event.stopPropagation(); speakWord('${word}')"></i>
+                            <span class="speaker-icon" title="Dinle" onclick="event.stopPropagation(); speakWord('${word}')">🔊</span>
                             <h1>${word}</h1>
                         </div>
                         <p class="meaning">${meaning}</p>
@@ -384,7 +250,7 @@
         
         // Kartları ilerletme (Sağ ok, Boşluk, Tıklama)
         const nextCard = (event) => {
-            // Seslendirme ikonuna tıklandığında ileri gitmeyi engellemek için kontrol
+            // Seslendirme elementine tıklandığında ileri gitmeyi engellemek için kontrol
             if (event && event.target.closest('.speaker-icon')) {
                 return;
             }
