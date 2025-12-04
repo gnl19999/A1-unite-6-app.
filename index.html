@@ -29,21 +29,23 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             position: relative;
             margin-top: 20px;
-            /* Tıklamayı yeniden etkinleştirdik */
             cursor: pointer; 
-            transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.3s ease;
+            /* İyileştirme: Animasyonları daha akıcı hale getirdik */
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                        box-shadow 0.2s ease, 
+                        opacity 0.3s ease;
             opacity: 0;
-            transform: translateY(10px);
+            transform: translateY(15px) scale(0.95);
         }
 
         .card.active {
             opacity: 1;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
         }
         
-        /* Tıklama animasyonunu geri ekledik */
         .card:active {
-            transform: scale(0.98);
+            /* Tıklama animasyonu daha belirginleştirildi */
+            transform: scale(0.97);
         } 
 
         .header { margin-bottom: 15px; }
@@ -70,6 +72,8 @@
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             background-color: #eee;
+            /* Karttaki tıklamayı algılaması için görseli pointer-events'tan çıkardık */
+            pointer-events: none; 
         }
         .word-image {
             width: 100%;
@@ -119,13 +123,13 @@
     <div class="info-bar">
         <span id="info-text">Yükleniyor...</span>
     </div>
-    <div class="nav-hint">İpucu: Kartları değiştirmek için **Kartın üzerine tıklayın** veya **Yön tuşlarını** kullanın (← / →)</div>
+    <div class="nav-hint">İpucu: Kartları değiştirmek için **Kartın üzerine tıklayın** veya **Yön tuşlarını** kullanın (← / →). Kelimeyi dinlemek için **↑** (Yukarı Ok) tuşuna basın.</div>
 
     <script>
         // --- JAVASCRIPT BAŞLANGIÇ ---
 
         /**
-         * Kelime Listesi: Görsel URL'leri güncellendi ve korunuyor.
+         * Kelime Listesi: Görsel URL'leri daha alakalı olanlarla güncellendi.
          */
         const wordList = [
             { 
@@ -134,7 +138,7 @@
                 example_en: "I bought a loaf of fresh [bread].", 
                 example_tr: "Taze bir somun ekmek aldım.", 
                 synonyms: "loaf, baked good",
-                image_url: "https://images.pexels.com/photos/3151897/pexels-photo-3151897.jpeg?auto=compress&cs=tinysrgb&w=600"
+                image_url: "https://images.pexels.com/photos/1014163/pexels-photo-1014163.jpeg?auto=compress&cs=tinysrgb&w=600"
             },
             { 
                 word: "break", 
@@ -142,7 +146,7 @@
                 example_en: "Be careful not to [break] the glass.", 
                 example_tr: "Bardağı kırmamaya dikkat et.", 
                 synonyms: "shatter, pause",
-                image_url: "https://images.pexels.com/photos/1769641/pexels-photo-1769641.jpeg?auto=compress&cs=tinysrgb&w=600"
+                image_url: "https://images.pexels.com/photos/3573604/pexels-photo-3573604.jpeg?auto=compress&cs=tinysrgb&w=600"
             },
             { 
                 word: "breakfast", 
@@ -150,7 +154,7 @@
                 example_en: "I usually eat eggs for [breakfast].", 
                 example_tr: "Genellikle kahvaltıda yumurta yerim.", 
                 synonyms: "morning meal",
-                image_url: "https://images.pexels.com/photos/2097090/pexels-photo-2097090.jpeg?auto=compress&cs=tinysrgb&w=600"
+                image_url: "https://images.pexels.com/photos/376464/pexels-photo-376464.jpeg?auto=compress&cs=tinysrgb&w=600"
             },
             { 
                 word: "bring", 
@@ -158,7 +162,7 @@
                 example_en: "Don't forget to [bring] your book.", 
                 example_tr: "Kitabını getirmeyi unutma.", 
                 synonyms: "fetch, carry",
-                image_url: "https://images.pexels.com/photos/5472877/pexels-photo-5472877.jpeg?auto=compress&cs=tinysrgb&w=600"
+                image_url: "https://images.pexels.com/photos/2085832/pexels-photo-2085832.jpeg?auto=compress&cs=tinysrgb&w=600"
             },
             { 
                 word: "brother", 
@@ -166,7 +170,7 @@
                 example_en: "My older [brother] lives abroad.", 
                 example_tr: "Ağabeyim yurt dışında yaşıyor.", 
                 synonyms: "sibling (male)",
-                image_url: "https://images.pexels.com/photos/4034954/pexels-photo-4034954.jpeg?auto=compress&cs=tinysrgb&w=600"
+                image_url: "https://images.pexels.com/photos/4034988/pexels-photo-4034988.jpeg?auto=compress&cs=tinysrgb&w=600"
             },
             { 
                 word: "brown", 
@@ -174,7 +178,7 @@
                 example_en: "I love the color of these [brown] shoes.", 
                 example_tr: "Bu kahverengi ayakkabıların rengini seviyorum.", 
                 synonyms: "tan, auburn",
-                image_url: "https://images.pexels.com/photos/2962760/pexels-photo-2962760.jpeg?auto=compress&cs=tinysrgb&w=600"
+                image_url: "https://images.pexels.com/photos/305232/pexels-photo-305232.jpeg?auto=compress&cs=tinysrgb&w=600"
             },
             { 
                 word: "build", 
@@ -182,7 +186,7 @@
                 example_en: "They plan to [build] a new school here.", 
                 example_tr: "Buraya yeni bir okul inşa etmeyi planlıyorlar.", 
                 synonyms: "construct, erect",
-                image_url: "https://images.pexels.com/photos/416320/pexels-photo-416320.jpeg?auto=compress&cs=tinysrgb&w=600"
+                image_url: "https://images.pexels.com/photos/1105766/pexels-photo-1105766.jpeg?auto=compress&cs=tinysrgb&w=600"
             },
             { 
                 word: "building", 
@@ -190,7 +194,7 @@
                 example_en: "That tall [building] is new.", 
                 example_tr: "Şu uzun bina yeni.", 
                 synonyms: "structure, edifice",
-                image_url: "https://images.pexels.com/photos/1036066/pexels-photo-1036066.jpeg?auto=compress&cs=tinysrgb&w=600"
+                image_url: "https://images.pexels.com/photos/173237/pexels-photo-173237.jpeg?auto=compress&cs=tinysrgb&w=600"
             },
             { 
                 word: "bus", 
@@ -198,7 +202,7 @@
                 example_en: "I take the [bus] to work every day.", 
                 example_tr: "İşe her gün otobüsle gidiyorum.", 
                 synonyms: "coach, public transport",
-                image_url: "https://images.pexels.com/photos/2070104/pexels-photo-2070104.jpeg?auto=compress&cs=tinysrgb&w=600"
+                image_url: "https://images.pexels.com/photos/163889/pexels-photo-163889.jpeg?auto=compress&cs=tinysrgb&w=600"
             },
             { 
                 word: "business", 
@@ -206,7 +210,7 @@
                 example_en: "He started his own small [business].", 
                 example_tr: "Kendi küçük işini kurdu.", 
                 synonyms: "enterprise, company",
-                image_url: "https://images.pexels.com/photos/3184306/pexels-photo-3184306.jpeg?auto=compress&cs=tinysrgb&w=600"
+                image_url: "https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=600"
             },
             { 
                 word: "busy", 
@@ -214,7 +218,7 @@
                 example_en: "Sorry, I'm too [busy] to talk right now.", 
                 example_tr: "Üzgünüm, şu an konuşamayacak kadar meşgulüm.", 
                 synonyms: "occupied, engaged",
-                image_url: "https://images.pexels.com/photos/3760069/pexels-photo-3760069.jpeg?auto=compress&cs=tinysrgb&w=600"
+                image_url: "https://images.pexels.com/photos/3862373/pexels-photo-3862373.jpeg?auto=compress&cs=tinysrgb&w=600"
             },
             { 
                 word: "but", 
@@ -230,7 +234,7 @@
                 example_en: "Spread some [butter] on your toast.", 
                 example_tr: "Tostunun üzerine biraz tereyağı sür.", 
                 synonyms: "margarine (loosely), spread",
-                image_url: "https://images.pexels.com/photos/5691659/pexels-photo-5691659.jpeg?auto=compress&cs=tinysrgb&w=600"
+                image_url: "https://images.pexels.com/photos/747493/pexels-photo-747493.jpeg?auto=compress&cs=tinysrgb&w=600"
             },
             { 
                 word: "buy", 
@@ -238,7 +242,7 @@
                 example_en: "I need to [buy] a new laptop.", 
                 example_tr: "Yeni bir dizüstü bilgisayar satın almam gerekiyor.", 
                 synonyms: "purchase, acquire",
-                image_url: "https://images.pexels.com/photos/4347895/pexels-photo-4347895.jpeg?auto=compress&cs=tinysrgb&w=600"
+                image_url: "https://images.pexels.com/photos/4040510/pexels-photo-4040510.jpeg?auto=compress&cs=tinysrgb&w=600"
             },
             { 
                 word: "by", 
@@ -246,7 +250,7 @@
                 example_en: "The book was written [by] a famous author.", 
                 example_tr: "Kitap ünlü bir yazar tarafından yazılmıştı.", 
                 synonyms: "near, past",
-                image_url: "https://images.pexels.com/photos/10394747/pexels-photo-10394747.jpeg?auto=compress&cs=tinysrgb&w=600"
+                image_url: "https://images.pexels.com/photos/1206412/pexels-photo-1206412.jpeg?auto=compress&cs=tinysrgb&w=600"
             },
             { 
                 word: "bye", 
@@ -254,7 +258,7 @@
                 example_en: "I said [bye] to my friends and left.", 
                 example_tr: "Arkadaşlarıma güle güle deyip ayrıldım.", 
                 synonyms: "goodbye, farewell",
-                image_url: "https://images.pexels.com/photos/1018804/pexels-photo-1018804.jpeg?auto=compress&cs=tinysrgb&w=600"
+                image_url: "https://images.pexels.com/photos/3697960/pexels-photo-3697960.jpeg?auto=compress&cs=tinysrgb&w=600"
             },
             { 
                 word: "cafe", 
@@ -262,7 +266,7 @@
                 example_en: "Let's meet at the new [cafe] downtown.", 
                 example_tr: "Şehir merkezindeki yeni kafede buluşalım.", 
                 synonyms: "coffee shop, bistro",
-                image_url: "https://images.pexels.com/photos/1516417/pexels-photo-1516417.jpeg?auto=compress&cs=tinysrgb&w=600"
+                image_url: "https://images.pexels.com/photos/1020317/pexels-photo-1020317.jpeg?auto=compress&cs=tinysrgb&w=600"
             },
             { 
                 word: "cake", 
@@ -270,7 +274,7 @@
                 example_en: "She baked a chocolate [cake] for the party.", 
                 example_tr: "Parti için çikolatalı bir kek yaptı.", 
                 synonyms: "pastry, dessert",
-                image_url: "https://images.pexels.com/photos/291528/pexels-photo-291528.jpeg?auto=compress&cs=tinysrgb&w=600"
+                image_url: "https://images.pexels.com/photos/1854652/pexels-photo-1854652.jpeg?auto=compress&cs=tinysrgb&w=600"
             },
             { 
                 word: "call", 
@@ -278,7 +282,7 @@
                 example_en: "Please [call] me when you get home.", 
                 example_tr: "Eve vardığında lütfen beni ara.", 
                 synonyms: "phone, summon",
-                image_url: "https://images.pexels.com/photos/4050318/pexels-photo-4050318.jpeg?auto=compress&cs=tinysrgb&w=600"
+                image_url: "https://images.pexels.com/photos/3771120/pexels-photo-3771120.jpeg?auto=compress&cs=tinysrgb&w=600"
             },
             { 
                 word: "camera", 
@@ -286,7 +290,7 @@
                 example_en: "She took a photo with her new [camera].", 
                 example_tr: "Yeni fotoğraf makinesiyle bir fotoğraf çekti.", 
                 synonyms: "photo device",
-                image_url: "https://images.pexels.com/photos/2115169/pexels-photo-2115169.jpeg?auto=compress&cs=tinysrgb&w=600"
+                image_url: "https://images.pexels.com/photos/3052329/pexels-photo-3052329.jpeg?auto=compress&cs=tinysrgb&w=600"
             }
         ];
 
@@ -294,7 +298,6 @@
         const container = document.getElementById('card-container');
         const infoText = document.getElementById('info-text');
 
-        // Seslendirme sırasında tekrar tıklamayı önlemek için bayrak
         let isSpeaking = false;
 
         function speakWord(text) {
@@ -381,14 +384,15 @@
         // Kartları ilerletme (Sağ ok, Boşluk, Tıklama)
         const nextCard = (event) => {
             // Seslendirme ikonuna tıklandığında ileri gitmeyi engellemek için kontrol
-            if (event && event.target.classList.contains('speaker-icon')) {
+            if (event && event.target.closest('.speaker-icon')) {
                 return;
             }
 
             const activeCard = document.getElementById('active-card');
             if (activeCard) {
                 activeCard.classList.remove('active');
-                activeCard.style.transform = 'translateY(10px) rotate(2deg)'; 
+                // Kartın sağa doğru kaybolma animasyonu
+                activeCard.style.transform = 'translateX(100%) scale(0.9) rotate(5deg)'; 
                 activeCard.style.opacity = '0';
             }
             
@@ -403,7 +407,8 @@
             const activeCard = document.getElementById('active-card');
             if (activeCard) {
                 activeCard.classList.remove('active');
-                activeCard.style.transform = 'translateY(10px) rotate(-2deg)';
+                // Kartın sola doğru kaybolma animasyonu
+                activeCard.style.transform = 'translateX(-100%) scale(0.9) rotate(-5deg)';
                 activeCard.style.opacity = '0';
             }
 
@@ -423,17 +428,19 @@
                 prevCard();
             } else if (e.key === 'ArrowUp') {
                 e.preventDefault();
+                // O anki kelimeyi seslendir
                 speakWord(wordList[currentIndex].word);
             }
         });
 
-        // Tıklama olayının HTML'den çağrılması için global kapsamda tutuldu.
-        window.nextCard = nextCard;
+        // Tıklama olayının HTML'den çağrılması için global kapsamda tutulur (En iyi pratik olmasa da, basit HTML kullanımı için bırakıldı)
+        window.nextCard = nextCard; 
+        window.speakWord = speakWord;
 
         // Sayfa Yüklendiğinde Başlatma
         document.addEventListener('DOMContentLoaded', function() {
             if (wordList.length > 0) {
-                currentIndex = 0; 
+                // currentIndex zaten 0 olduğu için tekrar atamaya gerek yok.
                 createCard(wordList[currentIndex]);
             } else {
                 container.innerHTML = '<h2>Liste boş.</h2>';
