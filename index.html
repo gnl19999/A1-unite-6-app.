@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kelime Kartları | Güncel</title>
+    <title>Kelime Kartları | SON DÜZELTME</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -29,8 +29,8 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             position: relative;
             margin-top: 20px;
-            /* Kartın tıklanma olayını (nextCard) kaldırdığımız için cursor: default yaptık */
-            cursor: default; 
+            /* Tıklamayı yeniden etkinleştirdik */
+            cursor: pointer; 
             transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.3s ease;
             opacity: 0;
             transform: translateY(10px);
@@ -41,10 +41,10 @@
             transform: translateY(0);
         }
         
-        /* Aktif kart üzerindeki (tıklama) animasyonunu kaldırdık, çünkü tıklama ilerlemeye neden oluyordu */
-        /* .card:active {
+        /* Tıklama animasyonunu geri ekledik */
+        .card:active {
             transform: scale(0.98);
-        } */ 
+        } 
 
         .header { margin-bottom: 15px; }
         .word-row { display: flex; align-items: center; gap: 15px; }
@@ -119,13 +119,13 @@
     <div class="info-bar">
         <span id="info-text">Yükleniyor...</span>
     </div>
-    <div class="nav-hint">İpucu: Kartları değiştirmek için **Yön tuşlarını** kullanın (← / →)</div>
+    <div class="nav-hint">İpucu: Kartları değiştirmek için **Kartın üzerine tıklayın** veya **Yön tuşlarını** kullanın (← / →)</div>
 
     <script>
         // --- JAVASCRIPT BAŞLANGIÇ ---
 
         /**
-         * Kelime Listesi: Görsel URL'leri güncellendi.
+         * Kelime Listesi: Görsel URL'leri güncellendi ve korunuyor.
          */
         const wordList = [
             { 
@@ -297,10 +297,6 @@
         // Seslendirme sırasında tekrar tıklamayı önlemek için bayrak
         let isSpeaking = false;
 
-        /**
-         * Kelimeyi İngilizce olarak seslendirir.
-         * @param {string} text Seslendirilecek kelime/metin.
-         */
         function speakWord(text) {
             if (isSpeaking) return;
             
@@ -321,17 +317,10 @@
             }
         }
 
-        /**
-         * Bilgi çubuğundaki (info-bar) mevcut kart/toplam kart bilgisini günceller.
-         */
         function updateInfoBar() {
             infoText.textContent = `Kart ${currentIndex + 1} / ${wordList.length}`;
         }
 
-        /**
-         * Verilen kelime verisine göre yeni kart HTML'ini oluşturur ve ekrana basar.
-         * @param {object} data Kelime verileri (word, meaning, example_en, etc.).
-         */
         function createCard(data) {
             const { word, meaning, example_en, example_tr, synonyms, image_url } = data;
             
@@ -341,9 +330,8 @@
             // Eş anlamlılar boşsa '-' göster
             const synonymsText = synonyms || '-';
 
-            // DİKKAT: Kartın kendisine tıklama (onclick="nextCard(event)") kaldırıldı.
             const cardHTML = `
-                <div class="card" id="active-card"> 
+                <div class="card" id="active-card" onclick="nextCard(event)"> 
                     ${image_url ? 
                         `<div class="image-container">
                             <img src="${image_url}" class="word-image" alt="${word}" onerror="this.closest('.image-container').style.display='none'"> 
@@ -382,7 +370,6 @@
             
             container.innerHTML = cardHTML;
             
-            // Animasyon için active sınıfını ekleme
             setTimeout(() => {
                 const card = document.getElementById('active-card');
                 if(card) card.classList.add('active');
@@ -393,13 +380,13 @@
         
         // Kartları ilerletme (Sağ ok, Boşluk, Tıklama)
         const nextCard = (event) => {
-            if (event) {
-                // event.stopPropagation(); // Tıklama olayını engellemek için kaldırıldı
+            // Seslendirme ikonuna tıklandığında ileri gitmeyi engellemek için kontrol
+            if (event && event.target.classList.contains('speaker-icon')) {
+                return;
             }
-            
+
             const activeCard = document.getElementById('active-card');
             if (activeCard) {
-                // Kaybolma animasyonu
                 activeCard.classList.remove('active');
                 activeCard.style.transform = 'translateY(10px) rotate(2deg)'; 
                 activeCard.style.opacity = '0';
@@ -415,7 +402,6 @@
         const prevCard = () => {
             const activeCard = document.getElementById('active-card');
             if (activeCard) {
-                // Kaybolma animasyonu
                 activeCard.classList.remove('active');
                 activeCard.style.transform = 'translateY(10px) rotate(-2deg)';
                 activeCard.style.opacity = '0';
@@ -430,7 +416,7 @@
         // Klavye Kontrolleri
         document.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
-                e.preventDefault(); // Sayfanın kaymasını önle (özellikle boşluk tuşu)
+                e.preventDefault(); 
                 nextCard();
             } else if (e.key === 'ArrowLeft') {
                 e.preventDefault();
@@ -441,10 +427,10 @@
             }
         });
 
-        // Kart tıklaması (Geri yüklemek isterseniz bu kısmı kullanabilirsiniz, şimdilik yoruma alındı)
-        // window.nextCard = nextCard;
+        // Tıklama olayının HTML'den çağrılması için global kapsamda tutuldu.
+        window.nextCard = nextCard;
 
-        // Sayfa Yüklendiğinde Başlatma (DOMContentLoaded daha iyidir)
+        // Sayfa Yüklendiğinde Başlatma
         document.addEventListener('DOMContentLoaded', function() {
             if (wordList.length > 0) {
                 currentIndex = 0; 
