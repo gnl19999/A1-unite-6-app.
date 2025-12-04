@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kelime Kartları | Yeni Liste - Güncellenmiş</title>
+    <title>Kelime Kartları | Hata Düzeltilmiş</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -288,21 +288,44 @@
         const container = document.getElementById('card-container');
         const infoText = document.getElementById('info-text');
 
-        // Sesli Okuma
+        // Seslendirme sırasında tekrar tıklamayı önlemek için bayrak
+        let isSpeaking = false;
+
+        /**
+         * Kelimeyi İngilizce olarak seslendirir.
+         * @param {string} text Seslendirilecek kelime/metin.
+         */
         function speakWord(text) {
+            if (isSpeaking) return; // Zaten konuşuyorsa durdur
+            
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
                 const msg = new SpeechSynthesisUtterance();
                 msg.text = text;
                 msg.lang = 'en-US'; 
                 msg.rate = 0.9; 
+                
+                isSpeaking = true;
+                msg.onend = () => { isSpeaking = false; };
+                msg.onerror = () => { isSpeaking = false; console.error("Seslendirme hatası."); };
+
                 window.speechSynthesis.speak(msg);
             } else {
                 console.warn("Tarayıcı metin okuma (Speech Synthesis) özelliğini desteklemiyor.");
             }
         }
 
-        // Kart Oluşturma
+        /**
+         * Bilgi çubuğundaki (info-bar) mevcut kart/toplam kart bilgisini günceller.
+         */
+        function updateInfoBar() {
+            infoText.textContent = `Kart ${currentIndex + 1} / ${wordList.length}`;
+        }
+
+        /**
+         * Verilen kelime verisine göre yeni kart HTML'ini oluşturur ve ekrana basar.
+         * @param {object} data Kelime verileri (word, meaning, example_en, etc.).
+         */
         function createCard(data) {
             const { word, meaning, example_en, example_tr, synonyms, image_url } = data;
             
@@ -313,10 +336,10 @@
             const synonymsText = synonyms || '-';
 
             const cardHTML = `
-                <div class="card" id="active-card" onclick="nextCard()">
+                <div class="card" id="active-card" onclick="nextCard(event)"> 
                     ${image_url ? 
                         `<div class="image-container">
-                            <img src="${image_url}" class="word-image" alt="${word}">
+                            <img src="${image_url}" class="word-image" alt="${word}" onerror="this.closest('.image-container').style.display='none'"> 
                         </div>` 
                         : ''}
 
@@ -361,12 +384,12 @@
             updateInfoBar();
         }
         
-        function updateInfoBar() {
-            infoText.textContent = `Kart ${currentIndex + 1} / ${wordList.length}`;
-        }
-
         // Kartları ilerletme (Sağ ok, Boşluk, Tıklama)
-        window.nextCard = function() {
+        const nextCard = (event) => {
+            if (event) {
+                event.stopPropagation();
+            }
+            
             const activeCard = document.getElementById('active-card');
             if (activeCard) {
                 // Kaybolma animasyonu
@@ -379,10 +402,10 @@
                 currentIndex = (currentIndex + 1) % wordList.length;
                 createCard(wordList[currentIndex]);
             }, 300); 
-        }
+        };
         
         // Kartları geri alma (Sol ok)
-        function prevCard() {
+        const prevCard = () => {
             const activeCard = document.getElementById('active-card');
             if (activeCard) {
                 // Kaybolma animasyonu
@@ -395,7 +418,7 @@
                 currentIndex = (currentIndex - 1 + wordList.length) % wordList.length;
                 createCard(wordList[currentIndex]);
             }, 300); 
-        }
+        };
 
         // Klavye Kontrolleri
         document.addEventListener('keydown', (e) => {
@@ -410,6 +433,9 @@
                 speakWord(wordList[currentIndex].word);
             }
         });
+
+        // Kart tıklaması için global çağrıyı koruyalım, ancak event almasını sağlayalım
+        window.nextCard = nextCard;
 
         // Sayfa Yüklendiğinde Başlatma
         window.onload = function() {
